@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
-project(my_raylib_game C)
-set(CMAKE_C_STANDARD 99)
+project(my_raylib_game CXX)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Adding Raylib
 include(FetchContent)
@@ -18,7 +19,8 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(raylib)
 
 # Adding our source files
-file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/sources/*.c") # Define PROJECT_SOURCES as a list of all source files
+file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/sources/*.cpp")
+
 set(PROJECT_INCLUDE "${CMAKE_CURRENT_LIST_DIR}/sources/") # Define PROJECT_INCLUDE to be the path to the include directory of the project
 
 # Declaring our executable
