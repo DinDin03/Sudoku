@@ -1,32 +1,45 @@
 #include "raylib.h"
+#include <vector>
+using namespace std;
 
-#define SCREEN_WIDTH (1440)
-#define SCREEN_HEIGHT (450)
+#define GRID_SIZE 9
+#define CELL_SIZE 100
 
-#define WINDOW_TITLE "Window title"
-
-int main(void)
-{
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE);
-    \
+int main(void) {
+    const int screenWidth = 1000;
+    const int screenHeight = 1000;
+    InitWindow(screenWidth, screenHeight, "SUDOKU");
     SetTargetFPS(60);
+    vector<vector<int>> grid(GRID_SIZE, vector<int>(GRID_SIZE,0));
+    int row = 0; int col = 0;
+    
+    while (!WindowShouldClose()) {
 
-    Texture2D texture = LoadTexture(ASSETS_PATH"test.png"); // Check README.md for how this works
+        if(IsKeyPressed(KEY_UP) && row > 0) row--;
+        if(IsKeyPressed(KEY_DOWN) && row < GRID_SIZE - 1) row++;
+        if(IsKeyPressed(KEY_RIGHT) && col < GRID_SIZE - 1) col++;
+        if(IsKeyPressed(KEY_LEFT) && col > 0) col--;
 
-    while (!WindowShouldClose())
-    {
+        for (int num = 1; num <= 9; num++) {
+            if (IsKeyPressed(KEY_ONE + num - 1)) {
+                grid[row][col] = num;  // Update the grid with the number
+            }
+        }
+
         BeginDrawing();
-
+        
         ClearBackground(RAYWHITE);
+        for (int row = 0; row < GRID_SIZE; row++) {
+            for (int col = 0; col < GRID_SIZE; col++) {
 
-        const int texture_x = SCREEN_WIDTH / 2 - texture.width / 2;
-        const int texture_y = SCREEN_HEIGHT / 2 - texture.height / 2;
-        DrawTexture(texture, texture_x, texture_y, WHITE);
+                DrawRectangleLines(col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE, BLACK);
 
-        const char* text = "OMG! IT WORKS!";
-        const Vector2 text_size = MeasureTextEx(GetFontDefault(), text, 20, 1);
-        DrawText(text, SCREEN_WIDTH / 2 - text_size.x / 2, texture_y + texture.height + text_size.y + 10, 20, BLACK);
-
+                if (grid[row][col] != 0) {
+                    DrawText(TextFormat("%d", grid[row][col]), col * CELL_SIZE + 15, row * CELL_SIZE + 15, 100, BLACK);
+                }
+            }
+        }
+        DrawRectangle(col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE, {169, 169, 169, 95});
         EndDrawing();
     }
 
