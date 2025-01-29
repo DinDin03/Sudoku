@@ -6,13 +6,15 @@
 #include <algorithm>
 #include <random>
 #include "raylib.h"
+using namespace std;
 
 const int GRID_SIZE = 9; // Define the grid size
 const int CELL_SIZE = 100; // Define each cell's size in pixels
 
 class Grid {
 private:
-    std::vector<std::vector<int>> grid;
+    vector<vector<int>> grid;
+    vector<vector<int>> userGrid;
 
 public:
     Grid();
@@ -30,6 +32,7 @@ public:
     void GenerateFullGrid();
     void RemoveNumbers(int difficulty);
     bool HasUniqueSolution();
+    void checkViolations();
 };
 
 #endif
