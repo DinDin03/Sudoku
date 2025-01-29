@@ -1,4 +1,4 @@
-#include "sudoku.h"
+#include "grid.h"
 #include <fstream>
 #include <iostream>
 #include <random>
