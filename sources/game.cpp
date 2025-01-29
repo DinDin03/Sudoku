@@ -1,8 +1,9 @@
 #include "game.h"
+#include "grid.h"
 #include <iostream>
 using namespace std;
 
-Game::Game(int width, int height) : screenWidth(width), screenHeight(height), row(0), col(0),showInvalidInput(false), invalidInputStartTime(0) {
+Game::Game(int width, int height) : screenWidth(width), screenHeight(height), row(0), col(0), gameWon(false), messageStartTime(0.0), gameStartTime(GetTime()), elapsedTime(0.0){
     InitWindow(screenWidth, screenHeight, "SUDOKU"); // Initialise the window with given screenwidth, screenHeight and call it SUDOKU. InitWindow(int width, int height, const char *title);
     SetTargetFPS(60); // Set the FPS to 60
 
@@ -24,8 +25,18 @@ void Game::Run() {
 
 double invalidInputStartTime = 0; // Store when the invalid input message starts
 bool showInvalidInput = false;   // Flag to track whether to show the message
+bool timeCalculated = false;
 
 void Game::Update() {
+    if(grid.isSolved() && !gameWon){
+        gameWon = true;
+        messageStartTime = GetTime();
+        if(!timeCalculated){
+            timeCalculated = true;
+            elapsedTime = messageStartTime - gameStartTime;
+        }
+    }
+
     int key = GetKeyPressed(); // Capture the key pressed
     if (IsKeyPressed(KEY_UP) && row > 0) row--; // If the up button or "W" is pressed, change row position by -y
     else if (IsKeyPressed(KEY_DOWN) && row < GRID_SIZE - 1) row++; // If the down button or "S" is pressed, change the row position by +y
@@ -58,6 +69,7 @@ void Game::Update() {
         }
         else if(CheckCollisionPointRec(mousePos, generateButton)){
             grid.GenerateSudoku(5);
+            gameStartTime = GetTime();
         }
         else if(CheckCollisionPointRec(mousePos, solveButton)){
             grid.SolveSudoku();
@@ -94,6 +106,13 @@ void Game::Draw() {
 
     invalidText("Invalid Input");
 
+    if (gameWon && (GetTime() - messageStartTime <= 1.0)) {
+        char message[100];
+        sprintf(message, "Congratulations!!! Time: %.2f seconds", elapsedTime);
+        DrawText(message, GetScreenWidth() - 700 , GetScreenHeight() - 110, 30, RED);
+        gameWon = false;
+    }
+
     EndDrawing(); // End the drawing
 }
 
@@ -112,3 +131,4 @@ void Game::invalidText(const char* text){
         showInvalidInput = false; // Stop showing the message after 2 seconds
     }
 }
+

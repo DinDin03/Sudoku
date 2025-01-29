@@ -12,6 +12,10 @@ private:
     int row, col; // declare variables for row and columns
     Rectangle clearButton, saveButton, loadButton, generateButton, solveButton;  // Create a rectangle button for clear button
     bool isStateChanged;
+    bool gameWon;
+    double messageStartTime;
+    double gameStartTime;
+    double elapsedTime;
 
 public:
     Game(int width, int height); // Create a game window with certain width and height 

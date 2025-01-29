@@ -77,7 +77,7 @@ void Grid::GenerateFullGrid() {
 }
 
 void Grid::RemoveNumbers(int difficulty) {
-    int attempts = difficulty * 10;
+    int attempts = 1;
     while (attempts > 0) {
         int row = rand() % GRID_SIZE;
         int col = rand() % GRID_SIZE;
@@ -207,5 +207,47 @@ void Grid::Draw() {
         );
     }
 }
+
+bool Grid::isSolved() const {
+    // Check rows
+    for (int row = 0; row < GRID_SIZE; ++row) {
+        std::vector<bool> seen(GRID_SIZE, false);
+        for (int col = 0; col < GRID_SIZE; ++col) {
+            int value = GetValue(row, col);
+            if (value == 0 || seen[value - 1]) return false;
+            seen[value - 1] = true;
+        }
+    }
+
+    // Check columns
+    for (int col = 0; col < GRID_SIZE; ++col) {
+        std::vector<bool> seen(GRID_SIZE, false);
+        for (int row = 0; row < GRID_SIZE; ++row) {
+            int value = GetValue(row, col);
+            if (value == 0 || seen[value - 1]) return false;
+            seen[value - 1] = true;
+        }
+    }
+
+    // Check 3x3 subgrids
+    for (int startRow = 0; startRow < GRID_SIZE; startRow += 3) {
+        for (int startCol = 0; startCol < GRID_SIZE; startCol += 3) {
+            std::vector<bool> seen(GRID_SIZE, false);
+            for (int row = 0; row < 3; ++row) {
+                for (int col = 0; col < 3; ++col) {
+                    int value = GetValue(startRow + row, startCol + col);
+                    if (value == 0 || seen[value - 1]) return false;
+                    seen[value - 1] = true;
+                }
+            }
+        }
+    }
+
+    return true;
+}
+
+
+
+
 
 

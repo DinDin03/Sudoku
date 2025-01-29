@@ -33,6 +33,7 @@ public:
     void ShuffleNumbers(std::vector<int>& numbers);
     void GenerateFullGrid();
     void RemoveNumbers(int difficulty);
+    bool isSolved() const;
 };
 
 #endif
