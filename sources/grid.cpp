@@ -91,6 +91,11 @@ void Grid::RemoveNumbers(int difficulty) {
 }
 
 void Grid::GenerateSudoku(int difficulty) {
+    // Reset both grids
+    grid = std::vector<std::vector<int>>(GRID_SIZE, std::vector<int>(GRID_SIZE, 0));
+    userGrid = std::vector<std::vector<int>>(GRID_SIZE, std::vector<int>(GRID_SIZE, 0));
+
+    // Generate a new puzzle
     GenerateFullGrid();
     RemoveNumbers(difficulty);
 }
@@ -123,7 +128,7 @@ bool Grid::LoadGrid(const std::string& filename) {
     if (!file.is_open()) return false;
 
     std::string line;
-    
+
     // Read predefined grid
     std::getline(file, line); // Read "GRID"
     for (auto& row : grid) {
