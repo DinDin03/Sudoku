@@ -67,6 +67,7 @@ void Game::Update() {
 
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) { // If mouse left click is pressed
         Vector2 mousePos = GetMousePosition(); // Create a vector which stores 2 values (x,y) and get the mouse position
+        
         if (CheckCollisionPointRec(mousePos, clearButton)) { // If mousePos is within the range of clearButton,
             grid.ClearGrid(); // Clear the grid
         }
