@@ -13,13 +13,12 @@ const int CELL_SIZE = 100; // Define each cell's size in pixels
 
 class Grid {
 private:
-    vector<vector<int>> grid;
-    vector<vector<int>> userGrid;
+    vector<vector<int>> grid, userGrid;
 
 public:
     Grid();
     void SetValue(int row, int col, int value);
-    int GetValue(int row, int col);
+    int GetValue(int row, int col) const;
     void ClearGrid();
     void SetGrid(const std::vector<std::vector<int>>& newGrid);
     bool IsValidPlacement(int row, int col, int num) const;
@@ -32,7 +31,7 @@ public:
     void GenerateFullGrid();
     void RemoveNumbers(int difficulty);
     bool HasUniqueSolution();
-    void checkViolations();
+    void CheckViolations();
 };
 
 #endif

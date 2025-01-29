@@ -14,14 +14,16 @@ void Grid::SetValue(int row, int col, int value) {
     }
 }
 
-int Grid::GetValue(int row, int col) {
+int Grid::GetValue(int row, int col) const {
     return (userGrid[row][col] != 0) ? userGrid[row][col] : grid[row][col];
 }
 
 void Grid::ClearGrid() {
     for (int i = 0; i < GRID_SIZE; ++i) {
         for (int j = 0; j < GRID_SIZE; ++j) {
-            userGrid[i][j] = 0;
+            if (grid[i][j] == 0) { // Clear only non-generated cells
+                userGrid[i][j] = 0;
+            }
         }
     }
 }
@@ -96,25 +98,54 @@ void Grid::GenerateSudoku(int difficulty) {
 bool Grid::SaveGrid(const std::string& filename) const {
     std::ofstream file(filename);
     if (!file.is_open()) return false;
+
+    // Save predefined grid
+    file << "GRID\n";
     for (const auto& row : grid) {
         for (size_t col = 0; col < row.size(); col++) {
             file << row[col] << (col < row.size() - 1 ? " " : "\n");
         }
     }
+
+    // Save user input grid
+    file << "USERGRID\n";
+    for (const auto& row : userGrid) {
+        for (size_t col = 0; col < row.size(); col++) {
+            file << row[col] << (col < row.size() - 1 ? " " : "\n");
+        }
+    }
+
     return true;
 }
 
 bool Grid::LoadGrid(const std::string& filename) {
     std::ifstream file(filename);
     if (!file.is_open()) return false;
+
+    std::string line;
+    
+    // Read predefined grid
+    std::getline(file, line); // Read "GRID"
     for (auto& row : grid) {
         for (auto& cell : row) {
             file >> cell;
             if (file.fail()) return false;
         }
     }
+
+    // Read user input grid
+    std::getline(file, line); // Read the leftover newline
+    std::getline(file, line); // Read "USERGRID"
+    for (auto& row : userGrid) {
+        for (auto& cell : row) {
+            file >> cell;
+            if (file.fail()) return false;
+        }
+    }
+
     return true;
 }
+
 
 bool Grid::SolveSudoku() {
     for (int row = 0; row < GRID_SIZE; row++) {
@@ -132,4 +163,44 @@ bool Grid::SolveSudoku() {
         }
     }
     return true;
+}
+
+void Grid::Draw() {
+    // Draw thin lines for individual cells
+    for (int row = 0; row < GRID_SIZE; row++) {
+        for (int col = 0; col < GRID_SIZE; col++) {
+            // Draw individual cell outlines
+            DrawRectangleLines(col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE, BLACK);
+
+            // Draw numbers in the cells
+            int value = GetValue(row, col); // Get the value from either grid or userGrid
+            if (value != 0) {
+                // If the value is from userGrid, draw it in a different color (e.g., BLUE)
+                if (userGrid[row][col] != 0) {
+                    DrawText(TextFormat("%d", value), col * CELL_SIZE + 35, row * CELL_SIZE + 35, 50, BLUE);
+                } else {
+                    DrawText(TextFormat("%d", value), col * CELL_SIZE + 35, row * CELL_SIZE + 35, 50, BLACK);
+                }
+            }
+        }
+    }
+
+    // Draw thicker lines for 3x3 subgrids
+    for (int i = 0; i <= GRID_SIZE; i += 3) { // Iterate every 3 cells
+        // Draw horizontal bold lines
+        DrawLineEx(
+            {0, static_cast<float>(i * CELL_SIZE)},                       // Start point
+            {static_cast<float>(GRID_SIZE * CELL_SIZE), static_cast<float>(i * CELL_SIZE)}, // End point
+            5.0f, // Line thickness
+            BLACK // Color
+        );
+
+        // Draw vertical bold lines
+        DrawLineEx(
+            {static_cast<float>(i * CELL_SIZE), 0},                       // Start point
+            {static_cast<float>(i * CELL_SIZE), static_cast<float>(GRID_SIZE * CELL_SIZE)}, // End point
+            5.0f, // Line thickness
+            BLACK // Color
+        );
+    }
 }
