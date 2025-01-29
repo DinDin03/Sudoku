@@ -77,7 +77,7 @@ void Grid::GenerateFullGrid() {
 }
 
 void Grid::RemoveNumbers(int difficulty) {
-    int attempts = 1;
+    int attempts = difficulty;
     while (attempts > 0) {
         int row = rand() % GRID_SIZE;
         int col = rand() % GRID_SIZE;

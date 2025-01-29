@@ -27,6 +27,15 @@ double invalidInputStartTime = 0; // Store when the invalid input message starts
 bool showInvalidInput = false;   // Flag to track whether to show the message
 bool timeCalculated = false;
 
+void Game::GenerateNewSudoku(int difficulty) {
+    grid.GenerateSudoku(difficulty);
+    gameWon = false;
+    timeCalculated = false;
+    gameStartTime = GetTime();
+    elapsedTime = 0.0;
+    messageStartTime = 0.0;
+}
+
 void Game::Update() {
     if(grid.isSolved() && !gameWon){
         gameWon = true;
@@ -70,6 +79,8 @@ void Game::Update() {
         else if(CheckCollisionPointRec(mousePos, generateButton)){
             grid.GenerateSudoku(5);
             gameStartTime = GetTime();
+            int difficulty = 1;
+            GenerateNewSudoku(difficulty);
         }
         else if(CheckCollisionPointRec(mousePos, solveButton)){
             grid.SolveSudoku();
@@ -106,11 +117,10 @@ void Game::Draw() {
 
     invalidText("Invalid Input");
 
-    if (gameWon && (GetTime() - messageStartTime <= 1.0)) {
+    if (gameWon) {
         char message[100];
         sprintf(message, "Congratulations!!! Time: %.2f seconds", elapsedTime);
         DrawText(message, GetScreenWidth() - 700 , GetScreenHeight() - 110, 30, RED);
-        gameWon = false;
     }
 
     EndDrawing(); // End the drawing

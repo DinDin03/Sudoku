@@ -25,6 +25,7 @@ public:
     int getScreenWidth();
     int getScreenHeight();
     void invalidText(const char* text);
+    void GenerateNewSudoku(int difficulty);
 };
 
 #endif
