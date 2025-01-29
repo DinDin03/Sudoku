@@ -1,4 +1,5 @@
 #include "grid.h"
+#include "game.h"
 #include <fstream>
 #include <iostream>
 #include <random>
@@ -9,10 +10,12 @@ Grid::Grid() {
 }
 
 void Grid::SetValue(int row, int col, int value) {
-    if (grid[row][col] == 0) { // Allow modification only if it's not a predefined number
+    // Check if the value is valid before setting it
+    if (grid[row][col] == 0 && IsValidPlacement(row, col, value)) { // Allow modification only if it's not a predefined number
         userGrid[row][col] = value;
     }
 }
+
 
 int Grid::GetValue(int row, int col) const {
     return (userGrid[row][col] != 0) ? userGrid[row][col] : grid[row][col];
@@ -34,12 +37,17 @@ void Grid::SetGrid(const std::vector<std::vector<int>>& newGrid) {
 }
 
 bool Grid::IsValidPlacement(int row, int col, int num) const {
+    // Check if the value is valid only if it's greater than 0
+    if (num == 0) return true;
+
+    // Check the row and column for duplicates
     for (int i = 0; i < GRID_SIZE; ++i) {
         if (GetValue(row, i) == num || GetValue(i, col) == num) {
             return false;
         }
     }
     
+    // Check the 3x3 subgrid for duplicates
     int startRow = (row / 3) * 3;
     int startCol = (col / 3) * 3;
     for (int i = 0; i < 3; ++i) {
@@ -50,16 +58,6 @@ bool Grid::IsValidPlacement(int row, int col, int num) const {
         }
     }
     return true;
-}
-
-void Grid::CheckViolations() {
-    for (int row = 0; row < GRID_SIZE; ++row) {
-        for (int col = 0; col < GRID_SIZE; ++col) {
-            if (userGrid[row][col] != 0 && !IsValidPlacement(row, col, userGrid[row][col])) {
-                std::cout << "Violation at (" << row << ", " << col << ") with value " << userGrid[row][col] << std::endl;
-            }
-        }
-    }
 }
 
 void Grid::ShuffleNumbers(std::vector<int>& numbers) {
@@ -209,3 +207,5 @@ void Grid::Draw() {
         );
     }
 }
+
+

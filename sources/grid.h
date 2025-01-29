@@ -8,11 +8,14 @@
 #include "raylib.h"
 using namespace std;
 
+class Game;
+
 const int GRID_SIZE = 9; // Define the grid size
 const int CELL_SIZE = 100; // Define each cell's size in pixels
 
 class Grid {
 private:
+    Game* game;
     vector<vector<int>> grid, userGrid;
 
 public:
@@ -30,8 +33,6 @@ public:
     void ShuffleNumbers(std::vector<int>& numbers);
     void GenerateFullGrid();
     void RemoveNumbers(int difficulty);
-    bool HasUniqueSolution();
-    void CheckViolations();
 };
 
 #endif

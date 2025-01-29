@@ -2,10 +2,10 @@
 #include <iostream>
 using namespace std;
 
-Game::Game(int width, int height) : screenWidth(width), screenHeight(height), row(0), col(0) {
+Game::Game(int width, int height) : screenWidth(width), screenHeight(height), row(0), col(0),showInvalidInput(false), invalidInputStartTime(0) {
     InitWindow(screenWidth, screenHeight, "SUDOKU"); // Initialise the window with given screenwidth, screenHeight and call it SUDOKU. InitWindow(int width, int height, const char *title);
     SetTargetFPS(60); // Set the FPS to 60
-    
+
     clearButton = { (screenWidth / 2) - 75.0f, screenHeight - 70.0f, 150.0f, 50.0f }; // Creates a button for the clear button. Rectangle(float x, float y, float width, float height) in pixels
     saveButton = { clearButton.x - 175.0f, clearButton.y, 150.0f, 50.0f };
     loadButton = { clearButton.x + 175.0f, clearButton.y, 150.0f, 50.0f };
@@ -92,11 +92,23 @@ void Game::Draw() {
     DrawRectangleRec(solveButton, LIGHTGRAY); // Draw the clear button. void DrawRectangleRec(Rectangle rec, Color color);
     DrawText("Solve", solveButton.x + 50, solveButton.y + 15, 20, BLACK); // Draw a text over the button
 
+    invalidText("Invalid Input");
+
+    EndDrawing(); // End the drawing
+}
+
+int Game:: getScreenHeight(){
+    return screenHeight;
+}
+
+int Game:: getScreenWidth(){
+    return screenWidth;
+}
+
+void Game::invalidText(const char* text){
     if (showInvalidInput && GetTime() - invalidInputStartTime <= 1.0) {
-        DrawText("Invalid Input", screenWidth - 200, screenHeight - 50, 20, RED);
+        DrawText(text, screenWidth - 550 , screenHeight - 110, 30, RED);
     } else if (showInvalidInput) {
         showInvalidInput = false; // Stop showing the message after 2 seconds
     }
-
-    EndDrawing(); // End the drawing
 }

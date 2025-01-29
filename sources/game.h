@@ -18,6 +18,9 @@ public:
     void Run(); // Start the game
     void Update(); // Update according to user input
     void Draw(); // Draw the grid, clear buttons etc
+    int getScreenWidth();
+    int getScreenHeight();
+    void invalidText(const char* text);
 };
 
 #endif
