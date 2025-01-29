@@ -79,7 +79,7 @@ void Game::Update() {
         else if(CheckCollisionPointRec(mousePos, generateButton)){
             grid.GenerateSudoku(5);
             gameStartTime = GetTime();
-            int difficulty = 1;
+            int difficulty = 40;
             GenerateNewSudoku(difficulty);
         }
         else if(CheckCollisionPointRec(mousePos, solveButton)){
@@ -101,25 +101,25 @@ void Game::Draw() {
     DrawRectangle(col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE, {169, 169, 169, 95}); // Draw rectangles for cells. void DrawRectangle(int posX, int posY, int width, int height, Color color);
 
     DrawRectangleRec(clearButton, LIGHTGRAY); // Draw the clear button. void DrawRectangleRec(Rectangle rec, Color color);
-    DrawText("Clear", clearButton.x + 50, clearButton.y + 15, 20, BLACK); // Draw a text over the button
+    DrawText("Clear", static_cast<int>(clearButton.x + 50), static_cast<int>(clearButton.y + 15), 20, BLACK); // Draw a text over the button
 
     DrawRectangleRec(saveButton, LIGHTGRAY); // Draw the clear button. void DrawRectangleRec(Rectangle rec, Color color);
-    DrawText("Save", saveButton.x + 50, saveButton.y + 15, 20, BLACK); // Draw a text over the button
+    DrawText("Save", static_cast<int>(saveButton.x + 50), static_cast<int>(saveButton.y + 15), 20, BLACK); // Draw a text over the button
 
     DrawRectangleRec(loadButton, LIGHTGRAY); // Draw the clear button. void DrawRectangleRec(Rectangle rec, Color color);
-    DrawText("Load", loadButton.x + 50, loadButton.y + 15, 20, BLACK); // Draw a text over the button
+    DrawText("Load", static_cast<int>(loadButton.x + 50), static_cast<int>(loadButton.y + 15), 20, BLACK); // Draw a text over the button
 
     DrawRectangleRec(generateButton, LIGHTGRAY); // Draw the clear button. void DrawRectangleRec(Rectangle rec, Color color);
-    DrawText("Generate", generateButton.x + 25, generateButton.y + 15, 20, BLACK); // Draw a text over the button
+    DrawText("Generate", static_cast<int>(generateButton.x + 25), static_cast<int>(generateButton.y + 15), 20, BLACK); // Draw a text over the button
 
     DrawRectangleRec(solveButton, LIGHTGRAY); // Draw the clear button. void DrawRectangleRec(Rectangle rec, Color color);
-    DrawText("Solve", solveButton.x + 50, solveButton.y + 15, 20, BLACK); // Draw a text over the button
+    DrawText("Solve", static_cast<int>(solveButton.x + 50), static_cast<int>(solveButton.y + 15), 20, BLACK); // Draw a text over the button
 
     invalidText("Invalid Input");
 
     if (gameWon) {
         char message[100];
-        sprintf(message, "Congratulations!!! Time: %.2f seconds", elapsedTime);
+        sprintf_s(message, "Congratulations!!! Time: %.2f seconds", elapsedTime);
         DrawText(message, GetScreenWidth() - 700 , GetScreenHeight() - 110, 30, RED);
     }
 
