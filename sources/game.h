@@ -10,9 +10,7 @@ private:
     int screenHeight; // Set the height of the game window
     Grid grid; // Create a grid
     int row, col; // declare variables for row and columns
-    Rectangle clearButton;  // Create a rectangle button for clear button
-    Rectangle saveButton;
-    Rectangle loadButton;
+    Rectangle clearButton, saveButton, loadButton, generateButton, solveButton;  // Create a rectangle button for clear button
     bool isStateChanged;
 
 public:

@@ -9,6 +9,8 @@ Game::Game(int width, int height) : screenWidth(width), screenHeight(height), ro
     clearButton = { (screenWidth / 2) - 75.0f, screenHeight - 70.0f, 150.0f, 50.0f }; // Creates a button for the clear button. Rectangle(float x, float y, float width, float height) in pixels
     saveButton = { clearButton.x - 175.0f, clearButton.y, 150.0f, 50.0f };
     loadButton = { clearButton.x + 175.0f, clearButton.y, 150.0f, 50.0f };
+    generateButton = { clearButton.x + 350.0f, clearButton.y, 150.0f, 50.0f };
+    solveButton = { clearButton.x - 350.0f, clearButton.y, 150.0f, 50.0f };
 
 }
 
@@ -54,6 +56,12 @@ void Game::Update() {
         else if(CheckCollisionPointRec(mousePos, loadButton)){
             grid.LoadGrid("grid.txt");
         }
+        else if(CheckCollisionPointRec(mousePos, generateButton)){
+            grid.GenerateSudoku(5);
+        }
+        else if(CheckCollisionPointRec(mousePos, solveButton)){
+            grid.SolveSudoku();
+        }
         else{
             col = static_cast<int>(round(mousePos.x)) / CELL_SIZE;
             row = static_cast<int>(round(mousePos.y)) / CELL_SIZE;
@@ -77,6 +85,12 @@ void Game::Draw() {
 
     DrawRectangleRec(loadButton, LIGHTGRAY); // Draw the clear button. void DrawRectangleRec(Rectangle rec, Color color);
     DrawText("Load", loadButton.x + 50, loadButton.y + 15, 20, BLACK); // Draw a text over the button
+
+    DrawRectangleRec(generateButton, LIGHTGRAY); // Draw the clear button. void DrawRectangleRec(Rectangle rec, Color color);
+    DrawText("Generate", generateButton.x + 25, generateButton.y + 15, 20, BLACK); // Draw a text over the button
+
+    DrawRectangleRec(solveButton, LIGHTGRAY); // Draw the clear button. void DrawRectangleRec(Rectangle rec, Color color);
+    DrawText("Solve", solveButton.x + 50, solveButton.y + 15, 20, BLACK); // Draw a text over the button
 
     if (showInvalidInput && GetTime() - invalidInputStartTime <= 1.0) {
         DrawText("Invalid Input", screenWidth - 200, screenHeight - 50, 20, RED);

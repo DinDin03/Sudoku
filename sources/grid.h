@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <string>
+#include <algorithm>
+#include <random>
 #include "raylib.h"
 
 const int GRID_SIZE = 9; // Define the grid size
@@ -22,6 +24,12 @@ public:
     void Draw();
     bool SaveGrid(const std::string& filename) const;
     bool LoadGrid(const std::string& filename);
+    void GenerateSudoku(int difficulty);
+    bool SolveSudoku();
+    void ShuffleNumbers(std::vector<int>& numbers);
+    void GenerateFullGrid();
+    void RemoveNumbers(int difficulty);
+    bool HasUniqueSolution();
 };
 
 #endif
