@@ -19,6 +19,7 @@ private:
     double gameStartTime;
     double elapsedTime;
     GameState gameState;
+    int difficulty;
 
 public:
     Game(int width, int height); // Create a game window with certain width and height 

@@ -5,7 +5,7 @@ using namespace std;
 
 Game::Game(int width, int height) : screenWidth(width), screenHeight(height), row(0), col(0), gameWon(false),
                                     messageStartTime(0.0), gameStartTime(GetTime()), elapsedTime(0.0),
-                                    gameState(MENU) { // Start in the menu
+                                    gameState(MENU), difficulty(20) { // Start in the menu
 
     InitWindow(screenWidth, screenHeight, "SUDOKU");
     SetTargetFPS(60);
@@ -59,13 +59,16 @@ void Game::DrawMenu() {
         Vector2 mousePos = GetMousePosition();
 
         if (CheckCollisionPointRec(mousePos, easyButton)) {
-            GenerateNewSudoku(20); // Easy = more numbers given
+            difficulty = 20;
+            GenerateNewSudoku(difficulty); // Easy = more numbers given
             gameState = PLAYING; // Switch to the game screen
         } else if (CheckCollisionPointRec(mousePos, mediumButton)) {
-            GenerateNewSudoku(40); // Medium difficulty
+            difficulty = 40;
+            GenerateNewSudoku(difficulty); // Medium difficulty
             gameState = PLAYING;
         } else if (CheckCollisionPointRec(mousePos, hardButton)) {
-            GenerateNewSudoku(60); // Hard = fewer numbers
+            difficulty = 60;
+            GenerateNewSudoku(difficulty); // Hard = fewer numbers
             gameState = PLAYING;
         }
     }
@@ -129,10 +132,8 @@ void Game::Update() {
             grid.LoadGrid("grid.txt");
         }
         else if(CheckCollisionPointRec(mousePos, generateButton)){
-            grid.GenerateSudoku(5);
-            gameStartTime = GetTime();
-            int difficulty = 40;
             GenerateNewSudoku(difficulty);
+            gameStartTime = GetTime();
         }
         else if(CheckCollisionPointRec(mousePos, solveButton)){
             grid.SolveSudoku();

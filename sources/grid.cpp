@@ -3,10 +3,11 @@
 #include <fstream>
 #include <iostream>
 #include <random>
+using namespace std;
 
 Grid::Grid() {
-    grid = std::vector<std::vector<int>>(GRID_SIZE, std::vector<int>(GRID_SIZE, 0));
-    userGrid = std::vector<std::vector<int>>(GRID_SIZE, std::vector<int>(GRID_SIZE, 0));
+    grid = vector<vector<int>>(GRID_SIZE, vector<int>(GRID_SIZE, 0));
+    userGrid = vector<vector<int>>(GRID_SIZE, vector<int>(GRID_SIZE, 0));
 }
 
 void Grid::SetValue(int row, int col, int value) {
@@ -43,9 +44,9 @@ void Grid::ClearGrid() {
     }
 }
 
-void Grid::SetGrid(const std::vector<std::vector<int>>& newGrid) {
+void Grid::SetGrid(const vector<vector<int>>& newGrid) {
     grid = newGrid;
-    userGrid = std::vector<std::vector<int>>(GRID_SIZE, std::vector<int>(GRID_SIZE, 0));
+    userGrid = vector<vector<int>>(GRID_SIZE, vector<int>(GRID_SIZE, 0));
 }
 
 bool Grid::IsValidPlacement(int row, int col, int num) const {
@@ -72,15 +73,15 @@ bool Grid::IsValidPlacement(int row, int col, int num) const {
     return true;
 }
 
-void Grid::ShuffleNumbers(std::vector<int>& numbers) {
-    std::random_device rd;
-    std::mt19937 g(rd());
-    std::shuffle(numbers.begin(), numbers.end(), g);
+void Grid::ShuffleNumbers(vector<int>& numbers) {
+    random_device rd;
+    mt19937 g(rd());
+    shuffle(numbers.begin(), numbers.end(), g);
 }
 
 void Grid::GenerateFullGrid() {
     ClearGrid();
-    std::vector<int> numbers = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+    vector<int> numbers = {1, 2, 3, 4, 5, 6, 7, 8, 9};
     ShuffleNumbers(numbers);
     for (int i = 0; i < GRID_SIZE; i++) {
         grid[i][(i * 3) % GRID_SIZE] = numbers[i];
@@ -102,16 +103,16 @@ void Grid::RemoveNumbers(int difficulty) {
 
 void Grid::GenerateSudoku(int difficulty) {
     // Reset both grids
-    grid = std::vector<std::vector<int>>(GRID_SIZE, std::vector<int>(GRID_SIZE, 0));
-    userGrid = std::vector<std::vector<int>>(GRID_SIZE, std::vector<int>(GRID_SIZE, 0));
+    grid = vector<vector<int>>(GRID_SIZE, vector<int>(GRID_SIZE, 0));
+    userGrid = vector<vector<int>>(GRID_SIZE, vector<int>(GRID_SIZE, 0));
 
     // Generate a new puzzle
     GenerateFullGrid();
     RemoveNumbers(difficulty);
 }
 
-bool Grid::SaveGrid(const std::string& filename) const {
-    std::ofstream file(filename);
+bool Grid::SaveGrid(const string& filename) const {
+    ofstream file(filename);
     if (!file.is_open()) return false;
 
     // Save predefined grid
@@ -133,14 +134,14 @@ bool Grid::SaveGrid(const std::string& filename) const {
     return true;
 }
 
-bool Grid::LoadGrid(const std::string& filename) {
-    std::ifstream file(filename);
+bool Grid::LoadGrid(const string& filename) {
+    ifstream file(filename);
     if (!file.is_open()) return false;
 
-    std::string line;
+    string line;
 
     // Read predefined grid
-    std::getline(file, line); // Read "GRID"
+    getline(file, line); // Read "GRID"
     for (auto& row : grid) {
         for (auto& cell : row) {
             file >> cell;
@@ -149,8 +150,8 @@ bool Grid::LoadGrid(const std::string& filename) {
     }
 
     // Read user input grid
-    std::getline(file, line); // Read the leftover newline
-    std::getline(file, line); // Read "USERGRID"
+    getline(file, line); // Read the leftover newline
+    getline(file, line); // Read "USERGRID"
     for (auto& row : userGrid) {
         for (auto& cell : row) {
             file >> cell;
@@ -219,7 +220,7 @@ void Grid::Draw() {
 bool Grid::isSolved() const {
     // Check rows
     for (int row = 0; row < GRID_SIZE; ++row) {
-        std::vector<bool> seen(GRID_SIZE, false);
+        vector<bool> seen(GRID_SIZE, false);
         for (int col = 0; col < GRID_SIZE; ++col) {
             int value = GetValue(row, col);
             if (value == 0 || seen[value - 1]) return false;
@@ -229,7 +230,7 @@ bool Grid::isSolved() const {
 
     // Check columns
     for (int col = 0; col < GRID_SIZE; ++col) {
-        std::vector<bool> seen(GRID_SIZE, false);
+        vector<bool> seen(GRID_SIZE, false);
         for (int row = 0; row < GRID_SIZE; ++row) {
             int value = GetValue(row, col);
             if (value == 0 || seen[value - 1]) return false;
@@ -240,7 +241,7 @@ bool Grid::isSolved() const {
     // Check 3x3 subgrids
     for (int startRow = 0; startRow < GRID_SIZE; startRow += 3) {
         for (int startCol = 0; startCol < GRID_SIZE; startCol += 3) {
-            std::vector<bool> seen(GRID_SIZE, false);
+            vector<bool> seen(GRID_SIZE, false);
             for (int row = 0; row < 3; ++row) {
                 for (int col = 0; col < 3; ++col) {
                     int value = GetValue(startRow + row, startCol + col);
