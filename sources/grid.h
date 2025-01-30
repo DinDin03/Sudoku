@@ -26,7 +26,7 @@ public:
     void SetValue(int row, int col, int value); // Set the value of the cell [row][col] to the value
     int GetValue(int row, int col) const; // Get the current value of the cell [row][col]
     void ClearGrid(); // Clears the userGrid
-    void SetGrid(const vector<vector<int>>& newGrid); // 
+    void SetGrid(const vector<vector<int>>& newGrid); // Set the Grid
     bool IsValidPlacement(int row, int col, int num) const;
     void Draw();
     bool SaveGrid(const string& filename) const;
