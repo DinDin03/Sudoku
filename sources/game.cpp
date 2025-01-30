@@ -3,38 +3,89 @@
 #include <iostream>
 using namespace std;
 
-Game::Game(int width, int height) : screenWidth(width), screenHeight(height), row(0), col(0), gameWon(false), messageStartTime(0.0), gameStartTime(GetTime()), elapsedTime(0.0){
-    InitWindow(screenWidth, screenHeight, "SUDOKU"); // Initialise the window with given screenwidth, screenHeight and call it SUDOKU. InitWindow(int width, int height, const char *title);
-    SetTargetFPS(60); // Set the FPS to 60
+Game::Game(int width, int height) : screenWidth(width), screenHeight(height), row(0), col(0), gameWon(false),
+                                    messageStartTime(0.0), gameStartTime(GetTime()), elapsedTime(0.0),
+                                    gameState(MENU) { // Start in the menu
 
-    clearButton = { (screenWidth / 2) - 75.0f, screenHeight - 70.0f, 150.0f, 50.0f }; // Creates a button for the clear button. Rectangle(float x, float y, float width, float height) in pixels
+    InitWindow(screenWidth, screenHeight, "SUDOKU");
+    SetTargetFPS(60);
+
+    // Position buttons for difficulty selection
+    easyButton = { static_cast<float>(screenWidth) / 2 - 150, static_cast<float>(screenHeight) / 2 - 100, 300, 60 };
+    mediumButton = { static_cast<float>(screenWidth) / 2 - 150, static_cast<float>(screenHeight) / 2, 300, 60 };
+    hardButton = { static_cast<float>(screenWidth) / 2 - 150, static_cast<float>(screenHeight) / 2 + 100, 300, 60 };
+
+    // Position buttons for gameplay
+    clearButton = { (screenWidth / 2) - 75.0f, screenHeight - 70.0f, 150.0f, 50.0f };
     saveButton = { clearButton.x - 175.0f, clearButton.y, 150.0f, 50.0f };
     loadButton = { clearButton.x + 175.0f, clearButton.y, 150.0f, 50.0f };
     generateButton = { clearButton.x + 350.0f, clearButton.y, 150.0f, 50.0f };
     solveButton = { clearButton.x - 350.0f, clearButton.y, 150.0f, 50.0f };
-
 }
+
 
 void Game::Run() {
-    while (!WindowShouldClose()) { // While the window is open,
-        Update(); // keep updating the grid
-        Draw(); // Keep drawing
+    while (!WindowShouldClose()) {
+        if (gameState == MENU) {
+            DrawMenu();  // Show difficulty selection
+        } else {
+            Update();
+            Draw();
+        }
     }
-    CloseWindow(); // Otherwise close the window
+    CloseWindow();
 }
+
+void Game::DrawMenu() {
+    BeginDrawing();
+    ClearBackground(RAYWHITE);
+
+    DrawText("Select Difficulty", screenWidth / 2 - 120, 100, 30, DARKGRAY);
+
+    // Draw buttons
+    DrawRectangleRec(easyButton, LIGHTGRAY);
+    DrawText("Easy", static_cast<int>(easyButton.x + 110), static_cast<int>(easyButton.y + 15), 30, BLACK);
+
+    DrawRectangleRec(mediumButton, LIGHTGRAY);
+    DrawText("Medium", static_cast<int>(mediumButton.x) + 90, static_cast<int>(mediumButton.y) + 15, 30, BLACK);
+
+    DrawRectangleRec(hardButton, LIGHTGRAY);
+    DrawText("Hard", static_cast<int>(hardButton.x + 110), static_cast<int>(hardButton.y + 15), 30, BLACK);
+
+    EndDrawing();
+
+    // Check for mouse click
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        Vector2 mousePos = GetMousePosition();
+
+        if (CheckCollisionPointRec(mousePos, easyButton)) {
+            GenerateNewSudoku(20); // Easy = more numbers given
+            gameState = PLAYING; // Switch to the game screen
+        } else if (CheckCollisionPointRec(mousePos, mediumButton)) {
+            GenerateNewSudoku(40); // Medium difficulty
+            gameState = PLAYING;
+        } else if (CheckCollisionPointRec(mousePos, hardButton)) {
+            GenerateNewSudoku(60); // Hard = fewer numbers
+            gameState = PLAYING;
+        }
+    }
+}
+
+
 
 double invalidInputStartTime = 0; // Store when the invalid input message starts
 bool showInvalidInput = false;   // Flag to track whether to show the message
 bool timeCalculated = false;
 
 void Game::GenerateNewSudoku(int difficulty) {
-    grid.GenerateSudoku(difficulty);
+    grid.GenerateSudoku(difficulty); // Generate Sudoku with specified difficulty
     gameWon = false;
     timeCalculated = false;
     gameStartTime = GetTime();
     elapsedTime = 0.0;
     messageStartTime = 0.0;
 }
+
 
 void Game::Update() {
     if(grid.isSolved() && !gameWon){
@@ -136,7 +187,7 @@ int Game:: getScreenWidth(){
 }
 
 void Game::invalidText(const char* text){
-    if (showInvalidInput && GetTime() - invalidInputStartTime <= 1.0) {
+    if (showInvalidInput && GetTime() - invalidInputStartTime <= 2.0) {
         DrawText(text, screenWidth - 550 , screenHeight - 110, 30, RED);
     } else if (showInvalidInput) {
         showInvalidInput = false; // Stop showing the message after 2 seconds

@@ -10,11 +10,23 @@ Grid::Grid() {
 }
 
 void Grid::SetValue(int row, int col, int value) {
-    // Check if the value is valid before setting it
-    if (grid[row][col] == 0 && IsValidPlacement(row, col, value)) { // Allow modification only if it's not a predefined number
-        userGrid[row][col] = value;
+    // If the cell is a pre-defined value, do not allow modification
+    if (grid[row][col] != 0) {
+        return;
     }
+
+    // Check if the number placement is valid
+    if (!IsValidPlacement(row, col, value)) {
+        errorMessage = "Violates SUDOKU rules!";
+        errorStartTime = GetTime(); // Store the time when the error occurred
+        return;
+    }
+
+    // If valid, update the user grid
+    userGrid[row][col] = value;
+    errorMessage.clear(); // Clear the error message if the move is valid
 }
+
 
 
 int Grid::GetValue(int row, int col) const {
@@ -176,9 +188,8 @@ void Grid::Draw() {
             DrawRectangleLines(col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE, BLACK);
 
             // Draw numbers in the cells
-            int value = GetValue(row, col); // Get the value from either grid or userGrid
+            int value = GetValue(row, col);
             if (value != 0) {
-                // If the value is from userGrid, draw it in a different color (e.g., BLUE)
                 if (userGrid[row][col] != 0) {
                     DrawText(TextFormat("%d", value), col * CELL_SIZE + 35, row * CELL_SIZE + 35, 50, BLUE);
                 } else {
@@ -189,24 +200,21 @@ void Grid::Draw() {
     }
 
     // Draw thicker lines for 3x3 subgrids
-    for (int i = 0; i <= GRID_SIZE; i += 3) { // Iterate every 3 cells
-        // Draw horizontal bold lines
-        DrawLineEx(
-            {0, static_cast<float>(i * CELL_SIZE)},                       // Start point
-            {static_cast<float>(GRID_SIZE * CELL_SIZE), static_cast<float>(i * CELL_SIZE)}, // End point
-            5.0f, // Line thickness
-            BLACK // Color
-        );
+    for (int i = 0; i <= GRID_SIZE; i += 3) { 
+        DrawLineEx({0, static_cast<float>(i * CELL_SIZE)},
+                   {static_cast<float>(GRID_SIZE * CELL_SIZE), static_cast<float>(i * CELL_SIZE)},
+                   5.0f, BLACK);
+        DrawLineEx({static_cast<float>(i * CELL_SIZE), 0},
+                   {static_cast<float>(i * CELL_SIZE), static_cast<float>(GRID_SIZE * CELL_SIZE)},
+                   5.0f, BLACK);
+    }
 
-        // Draw vertical bold lines
-        DrawLineEx(
-            {static_cast<float>(i * CELL_SIZE), 0},                       // Start point
-            {static_cast<float>(i * CELL_SIZE), static_cast<float>(GRID_SIZE * CELL_SIZE)}, // End point
-            5.0f, // Line thickness
-            BLACK // Color
-        );
+    // Show error message for 2 seconds
+    if (!errorMessage.empty() && GetTime() - errorStartTime <= 2.0) {
+        DrawText(errorMessage.c_str(), GetScreenWidth() - 650 , GetScreenHeight() - 110, 30, RED);
     }
 }
+
 
 bool Grid::isSolved() const {
     // Check rows
