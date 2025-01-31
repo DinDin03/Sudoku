@@ -1,4 +1,4 @@
-#include "game.h"
+#include "game.h" // import
 #include "grid.h"
 #include <iostream>
 using namespace std;
